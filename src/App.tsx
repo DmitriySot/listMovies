@@ -1,25 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import Header from 'components/Header';
+import MoviesList from 'components/MoviesList';
+import MovieDescription from 'components/MovieDescription';
+import { styled } from '@mui/material';
+import FavoriteMoviesList from 'components/FavoriteMoviesList';
+
+const StyledWrapper = styled('div')({
+  minWidth: '450px',
+  background: 'gray',
+  width: '100%',
+  padding: '10px',
+  margin: '0 auto',
+  boxSizing: 'border-box',
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StyledWrapper>
+      <Header />
+      <Routes>
+        <Route path="/" element={<MoviesList />} />
+        <Route path="/favorite" element={<FavoriteMoviesList />} />
+      </Routes>
+      <MovieDescription />
+    </StyledWrapper>
   );
 }
 
