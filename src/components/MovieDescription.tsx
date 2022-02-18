@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, styled } from '@mui/material';
+import { Grid, LinearProgress, styled } from '@mui/material';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { moviesAtom } from 'recoil/atom';
@@ -46,10 +46,11 @@ const StyledDescription = styled('div')({});
 
 const MovieDescription = () => {
   const [film, setFilm] = React.useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [movieState, setMovieState] = useRecoilState(moviesAtom);
 
   const getDescription = async () => {
-    console.log('__movieState__', movieState);
+    setLoading(true);
     try {
       const res = await axios(`https://swapi.dev/api/films/${movieState.selectedMovie}`);
       console.log('__res__', res.data);
@@ -57,6 +58,7 @@ const MovieDescription = () => {
     } catch (e) {
       console.log('__e__', e);
     }
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -75,7 +77,6 @@ const MovieDescription = () => {
 
   const onToggleFavorite = () => {
     const favorites = [...movieState.favoriteMovies];
-    console.log('__favoriteMovies__', favorites);
     const selected = movieState.selectedMovie;
     if (favorites.includes(selected)) {
       const index = favorites.findIndex((item) => item === selected);
@@ -93,22 +94,28 @@ const MovieDescription = () => {
   }, [movieState.favoriteMovies.length, movieState.selectedMovie]);
 
   return (
-    <StyledWrapperGrid xs={12} sm={12}>
-      <StyledwrapperTitle>
-        <StyledTitle>{film.title}</StyledTitle>
-        <StyledFavorite onClick={onToggleFavorite}>
-          {isFavorite ? <img src="/favorite.png" /> : <img src="/not_favorite.png" />}
-        </StyledFavorite>
-      </StyledwrapperTitle>
+    <StyledWrapperGrid xs={12} sm={8} item>
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        <>
+          <StyledwrapperTitle>
+            <StyledTitle>{film.title}</StyledTitle>
+            <StyledFavorite onClick={onToggleFavorite}>
+              {isFavorite ? <img src="/favorite.png" /> : <img src="/not_favorite.png" />}
+            </StyledFavorite>
+          </StyledwrapperTitle>
 
-      {data.map((item) => {
-        return (
-          <StyledwrapperBlock key={item.title}>
-            <StyledAnnotation>{item.title} </StyledAnnotation>
-            <StyledDescription>{item.description}</StyledDescription>
-          </StyledwrapperBlock>
-        );
-      })}
+          {data.map((item) => {
+            return (
+              <StyledwrapperBlock key={item.title}>
+                <StyledAnnotation>{item.title} </StyledAnnotation>
+                <StyledDescription>{item.description}</StyledDescription>
+              </StyledwrapperBlock>
+            );
+          })}
+        </>
+      )}
     </StyledWrapperGrid>
   );
 };

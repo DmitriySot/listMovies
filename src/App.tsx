@@ -3,10 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 import Header from 'components/Header';
 import MoviesList from 'components/MoviesList';
 import MovieDescription from 'components/MovieDescription';
-import { styled } from '@mui/material';
+import { Grid, styled } from '@mui/material';
 import FavoriteMoviesList from 'components/FavoriteMoviesList';
 
-const StyledWrapper = styled('div')({
+const StyledWrapper = styled(Grid)({
   minWidth: '450px',
   background: 'gray',
   width: '100%',
@@ -17,7 +17,7 @@ const StyledWrapper = styled('div')({
 
 function App() {
   return (
-    <StyledWrapper>
+    <StyledWrapper container>
       <Header />
       <Routes>
         <Route path="/" element={<MoviesList />} />

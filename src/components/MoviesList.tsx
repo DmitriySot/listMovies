@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, styled } from '@mui/material';
+import { Grid, LinearProgress, styled } from '@mui/material';
 import axios from 'axios';
 import { getNumber } from 'helper';
 import { useRecoilState } from 'recoil';
@@ -25,18 +25,18 @@ const StyledFilmWrapper = styled('div')`
 const MoviesList = () => {
   const [listFilms, setListFilms] = React.useState<{ [key: string]: string }[]>([]);
   const [moviesState, setMoviesState] = useRecoilState(moviesAtom);
-
-  console.log('__render__');
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const getListMovies = async () => {
+    setLoading(true);
     try {
       const res = await axios('https://swapi.dev/api/films');
       const data = res.data.results;
       setListFilms(data);
-      console.log('__data__', data);
     } catch (e) {
       console.log('__e__', e);
     }
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -49,12 +49,16 @@ const MoviesList = () => {
   };
 
   return (
-    <StyledWrapperGrid xs={12} sm={12}>
-      {listFilms.map((film) => (
-        <StyledFilmWrapper key={film.episode_id} onClick={onFilmClick(film.url)}>
-          {film.title}
-        </StyledFilmWrapper>
-      ))}
+    <StyledWrapperGrid xs={12} sm={4}>
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        listFilms.map((film) => (
+          <StyledFilmWrapper key={film.episode_id} onClick={onFilmClick(film.url)}>
+            {film.title}
+          </StyledFilmWrapper>
+        ))
+      )}
     </StyledWrapperGrid>
   );
 };
